@@ -1,23 +1,13 @@
 <?xml version="1.0"?>
 <PLUGIN name="gpu-switch"
         author="thewolfman56"
-        version="3.0"
+        version="3.1"
         pluginURL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.plg"
         support="https://forums.unraid.net/topic/YOUR-THREAD"
         icon="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/assets/icon.png">
 
-  <DESCRIPTION>
-GPU Switch Manager v3
+  <DESCRIPTION>GPU Switch Manager with UI, Tdarr, and Multi-GPU mapping</DESCRIPTION>
 
-• Automatic GPU switching between Docker and VM  
-• Tdarr-aware queue draining  
-• Live GPU usage graph  
-• Drag-and-drop container assignment  
-• VM control directly from UI  
-• Safe, logged, automated transitions  
-  </DESCRIPTION>
-
-  <!-- CORE FILES -->
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.sh" />
 
@@ -27,7 +17,9 @@ GPU Switch Manager v3
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/ui-status.sh"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/ui-status.sh" />
 
-  <!-- UI FILES -->
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/qemu-hook.php"
+        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/qemu-hook.php" />
+
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/settings.php"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/settings.php" />
 
@@ -40,23 +32,20 @@ GPU Switch Manager v3
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/style.css"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/style.css" />
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/test_tdarr.php"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/test_tdarr.php" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/gpu_list.php"
+        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/gpu_list.php" />
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/gpu_usage.php"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/gpu_usage.php" />
 
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/test_tdarr.php"
+        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/test_tdarr.php" />
+
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/vm.php"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/vm.php" />
 
-  <!-- HOOK -->
-  <FILE Name="/boot/config/plugins/gpu-switch/qemu-hook.php"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/qemu-hook.php" />
-
-  <!-- INSTALL STEPS -->
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/logs" />
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/state" />
-
   <FILE Run="/bin/chmod +x /usr/local/emhttp/plugins/gpu-switch/*.sh" />
 
 </PLUGIN>
