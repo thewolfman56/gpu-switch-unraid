@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <PLUGIN name="gpu-switch"
         author="thewolfman56"
-        version="4.0"
+        version="4.0.1"
         launch="Settings/GPU Switch Manager"
         pluginURL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.plg"
         support="https://forums.unraid.net/topic/YOUR-THREAD"
@@ -9,15 +9,9 @@
 
   <DESCRIPTION>GPU Switch Manager with UI, Tdarr, and Multi-GPU mapping</DESCRIPTION>
 
-  <FILE Run="/bin/bash">
-  <INLINE>
-  mkdir -p /usr/local/emhttp/plugins/gpu-switch/include
-  mkdir -p /usr/local/emhttp/plugins/gpu-switch/logs
-  mkdir -p /usr/local/emhttp/plugins/gpu-switch/state
-  mkdir -p /boot/config/plugins/gpu-switch
-  exit 0
-  </INLINE>
-  </FILE>
+  <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/include" />
+  <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/logs" />
+  <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/state" />
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.page"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.page" />
@@ -25,7 +19,7 @@
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.sh" />
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/default-config.json"
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/config.json"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/config.json" />
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/ui-status.sh"
@@ -52,16 +46,7 @@
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/test_tdarr.php"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/test_tdarr.php" />
 
-  <FILE Run="/bin/bash">
-  <INLINE>
-  if [ ! -f /boot/config/plugins/gpu-switch/config.json ]; then
-    cp /usr/local/emhttp/plugins/gpu-switch/default-config.json /boot/config/plugins/gpu-switch/config.json || true
-  fi
-  ln -sf /boot/config/plugins/gpu-switch/config.json /usr/local/emhttp/plugins/gpu-switch/config.json || true
-  cp /usr/local/emhttp/plugins/gpu-switch/qemu-hook.php /boot/config/plugins/gpu-switch/qemu-hook.php || true
-  chmod +x /usr/local/emhttp/plugins/gpu-switch/*.sh || true
-  exit 0
-  </INLINE>
-  </FILE>
+  <FILE Run="/bin/chmod +x /usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh" />
+  <FILE Run="/bin/chmod +x /usr/local/emhttp/plugins/gpu-switch/ui-status.sh" />
 
 </PLUGIN>
