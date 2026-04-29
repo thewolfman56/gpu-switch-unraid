@@ -1,5 +1,5 @@
 {
-  "vm_name": "Windows 11 Gaming",
+  "vm_name": "",
   "auto_switch": true,
   "tdarr": {
     "enabled": true,
@@ -9,7 +9,6 @@
     "gpu": [],
     "cpu": []
   },
-  "gpus": {
-    "0": "docker"
-  }
+  "vm_gpu_map": {},
+  "gpus": {}
 }
