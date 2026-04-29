@@ -1,0 +1,8 @@
+Menu="Settings"
+Title="GPU Switch Manager"
+Icon="microchip"
+Type="php"
+---
+<?php
+include "/usr/local/emhttp/plugins/gpu-switch/include/settings.php";
+?>
