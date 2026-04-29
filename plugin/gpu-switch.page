@@ -1,8 +1,13 @@
 Menu="Settings"
 Title="GPU Switch Manager"
-Icon="microchip"
-Type="php"
+Icon="cog"
 ---
 <?php
-include "/usr/local/emhttp/plugins/gpu-switch/include/settings.php";
+$settings="/usr/local/emhttp/plugins/gpu-switch/include/settings.php";
+if(file_exists($settings)){
+  include $settings;
+}else{
+  echo "<h1>GPU Switch Manager</h1>";
+  echo "<p>Settings file not found: ".htmlspecialchars($settings)."</p>";
+}
 ?>
