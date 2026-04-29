@@ -1,50 +1,15 @@
-#!/usr/bin/env php
 <?php
+$vm = $argv[1];
+$action = $argv[2];
 
-$vmName = $argv[1] ?? '';
-$action = $argv[2] ?? '';
+$config = json_decode(file_get_contents("/usr/local/emhttp/plugins/gpu-switch/config.json"), true);
 
-$targetVM = "Windows 11 Gaming";
-$script = "/boot/config/plugins/gpu-switch/gpu-switch.sh";
+if (!$config['auto_switch']) exit;
 
-function log_msg($msg) {
-    file_put_contents(
-        "/boot/config/plugins/gpu-switch/logs/gpu-switch.log",
-        date("[Y-m-d H:i:s] ") . $msg . "\n",
-        FILE_APPEND
-    );
+if ($vm === $config['vm_name'] && $action === "prepare") {
+    exec("/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh enter_vm");
 }
 
-function run($cmd) {
-    exec($cmd . " >> /boot/config/plugins/gpu-switch/logs/gpu-switch.log 2>&1");
-}
-
-if ($vmName === $targetVM && $action === 'prepare') {
-    run("$script enter_vm_mode");
-}
-
-if ($vmName === $targetVM && $action === 'release') {
-    run("$script exit_vm_mode");
-}
-
-if ($action !== 'start') {
-    exit(0);
-}
-
-log_msg("Preparing VFIO binding...");
-sleep(2);
-
-/* --- VFIO BIND LOGIC (unchanged, but add retry) --- */
-
-function vfio_bind($dev) {
-    $path = "/sys/bus/pci/devices/$dev";
-
-    for ($i = 0; $i < 5; $i++) {
-        if (@file_put_contents("$path/driver/unbind", $dev) !== false) {
-            return true;
-        }
-        sleep(1);
-    }
-
-    return false;
+if ($vm === $config['vm_name'] && $action === "release") {
+    exec("/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh exit_vm");
 }
