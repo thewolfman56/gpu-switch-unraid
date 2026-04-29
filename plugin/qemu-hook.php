@@ -7,6 +7,14 @@ $action = $argv[2] ?? '';
 $targetVM = "Windows 11 Gaming";
 $script = "/boot/config/plugins/gpu-switch/gpu-switch.sh";
 
+function log_msg($msg) {
+    file_put_contents(
+        "/boot/config/plugins/gpu-switch/logs/gpu-switch.log",
+        date("[Y-m-d H:i:s] ") . $msg . "\n",
+        FILE_APPEND
+    );
+}
+
 function run($cmd) {
     exec($cmd . " >> /boot/config/plugins/gpu-switch/logs/gpu-switch.log 2>&1");
 }
@@ -22,6 +30,9 @@ if ($vmName === $targetVM && $action === 'release') {
 if ($action !== 'start') {
     exit(0);
 }
+
+log_msg("Preparing VFIO binding...");
+sleep(2);
 
 /* --- VFIO BIND LOGIC (unchanged, but add retry) --- */
 
