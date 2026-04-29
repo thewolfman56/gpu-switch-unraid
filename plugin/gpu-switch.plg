@@ -15,6 +15,7 @@
   mkdir -p /usr/local/emhttp/plugins/gpu-switch/logs
   mkdir -p /usr/local/emhttp/plugins/gpu-switch/state
   mkdir -p /boot/config/plugins/gpu-switch
+  exit 0
   </INLINE>
   </FILE>
 
@@ -24,7 +25,7 @@
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.sh" />
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/config.json"
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/default-config.json"
         URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/config.json" />
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/ui-status.sh"
@@ -54,11 +55,12 @@
   <FILE Run="/bin/bash">
   <INLINE>
   if [ ! -f /boot/config/plugins/gpu-switch/config.json ]; then
-    cp /usr/local/emhttp/plugins/gpu-switch/config.json /boot/config/plugins/gpu-switch/config.json
+    cp /usr/local/emhttp/plugins/gpu-switch/default-config.json /boot/config/plugins/gpu-switch/config.json || true
   fi
-  ln -sf /boot/config/plugins/gpu-switch/config.json /usr/local/emhttp/plugins/gpu-switch/config.json
-  cp /usr/local/emhttp/plugins/gpu-switch/qemu-hook.php /boot/config/plugins/gpu-switch/qemu-hook.php
-  chmod +x /usr/local/emhttp/plugins/gpu-switch/*.sh
+  ln -sf /boot/config/plugins/gpu-switch/config.json /usr/local/emhttp/plugins/gpu-switch/config.json || true
+  cp /usr/local/emhttp/plugins/gpu-switch/qemu-hook.php /boot/config/plugins/gpu-switch/qemu-hook.php || true
+  chmod +x /usr/local/emhttp/plugins/gpu-switch/*.sh || true
+  exit 0
   </INLINE>
   </FILE>
 
