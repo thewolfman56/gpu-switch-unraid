@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <PLUGIN name="gpu-switch"
         author="thewolfman56"
-        version="4.0.1"
-        launch="Settings/GPU Switch Manager"
+        version="4.0.3"
+        launch="Settings/gpu-switch"
         pluginURL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.plg"
         support="https://forums.unraid.net/topic/YOUR-THREAD"
-        icon="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/assets/icon.png">
+        icon="cog">
 
   <DESCRIPTION>GPU Switch Manager with UI, Tdarr, and Multi-GPU mapping</DESCRIPTION>
 
