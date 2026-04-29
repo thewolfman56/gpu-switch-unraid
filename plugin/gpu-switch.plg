@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <PLUGIN name="gpu-switch"
         author="thewolfman56"
-        version="4.0.1"
-        launch="Settings/GPU Switch Manager"
+        version="4.0.4"
+        launch="Settings/gpu-switch"
         pluginURL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.plg"
         support="https://forums.unraid.net/topic/YOUR-THREAD"
-        icon="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/assets/icon.png">
+        icon="cog">
 
   <DESCRIPTION>GPU Switch Manager with UI, Tdarr, and Multi-GPU mapping</DESCRIPTION>
 
@@ -13,38 +13,49 @@
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/logs" />
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/state" />
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.page"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.page" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.page">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.page</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.sh" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/gpu-switch.sh</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/config.json"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/config.json" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/config.json">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/config.json</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/ui-status.sh"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/ui-status.sh" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/ui-status.sh">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/ui-status.sh</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/qemu-hook.php"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/qemu-hook.php" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/qemu-hook.php">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/qemu-hook.php</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/settings.php"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/settings.php" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/settings.php">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/settings.php</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/actions.php"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/actions.php" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/actions.php">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/actions.php</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/ui.js"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/ui.js" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/ui.js">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/ui.js</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/style.css"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/style.css" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/style.css">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/style.css</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/gpu_usage.php"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/gpu_usage.php" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/gpu_usage.php">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/gpu_usage.php</URL>
+  </FILE>
 
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/test_tdarr.php"
-        URL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/test_tdarr.php" />
+  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/test_tdarr.php">
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/main/plugin/include/test_tdarr.php</URL>
+  </FILE>
 
   <FILE Run="/bin/chmod +x /usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh" />
   <FILE Run="/bin/chmod +x /usr/local/emhttp/plugins/gpu-switch/ui-status.sh" />
