@@ -5,6 +5,25 @@ log() {
   echo "$(date '+%F %T') | $1" | tee -a "$LOG_FILE"
 }
 
+get_gpu_containers() {
+  docker ps --format '{{.Names}}' | while read c; do
+    if docker inspect "$c" | grep -q NVIDIA_VISIBLE_DEVICES; then
+      echo "$c"
+    fi
+  done
+}
+
+sort_by_priority() {
+  for c in "$@"; do
+    p=${GPU_CONTAINER_PRIORITY[$c]:-999}
+    echo "$p $c"
+  done | sort -n | awk '{print $2}'
+}
+
+get_gpu_process_count() {
+  nvidia-smi --query-compute-apps=pid --format=csv,noheader | wc -l
+}
+
 wait_for_gpu_idle() {
   log "Waiting for GPU to become idle..."
   for i in {1..30}; do
@@ -40,8 +59,12 @@ save_gpu_container_state() {
 }
 
 stop_gpu_containers() {
-  log "Stopping GPU containers..."
-  for c in "${GPU_CONTAINERS[@]}"; do
+  log "Stopping GPU containers (priority-based)..."
+
+  containers=$(get_gpu_containers)
+  sorted=$(sort_by_priority $containers)
+
+  for c in $sorted; do
     if docker ps --format '{{.Names}}' | grep -q "^${c}$"; then
       log "Stopping $c"
       docker stop "$c"
