@@ -103,5 +103,5 @@ foreach($gpuMapping as $mapping){
   }
 }
 file_put_contents($p,json_encode($c,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-header("Location: /gpu-switch");
+header("Location: /Main/gpu-switch");
 exit;

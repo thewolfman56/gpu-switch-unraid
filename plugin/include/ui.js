@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
     // Redirect after successful save
     setTimeout(()=>{
-     window.location.href="/gpu-switch";
+     window.location.href="/Main/gpu-switch";
     },1000);
    }else{
     const errorText=await response.text();

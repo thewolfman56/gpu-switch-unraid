@@ -2,7 +2,7 @@
 <PLUGIN name="gpu-switch"
         author="thewolfman56"
         version="4.0.5"
-        launch="gpu-switch"
+        launch="Main/gpu-switch"
         pluginURL="https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/gpu-switch.plg"
         support="https://forums.unraid.net/topic/YOUR-THREAD"
         icon="cog">

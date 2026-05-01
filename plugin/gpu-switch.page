@@ -1,3 +1,4 @@
+Menu="Main"
 Title="gpu-switch"
 Icon="cog"
 ---
@@ -6,7 +7,7 @@ session_start();
 
 // Check if user is authenticated
 if (!isset($_SESSION['user']) || !$_SESSION['user']) {
-    header('Location: /gpu-switch');
+    header('Location: /Main/gpu-switch');
     exit;
 }
 
