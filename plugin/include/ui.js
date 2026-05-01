@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   };
  });
 
+ // Form submission handler
  document.getElementById("form").addEventListener("submit",async e=>{
   e.preventDefault();
   syncAssignments();
@@ -157,6 +158,7 @@ document.addEventListener("DOMContentLoaded",()=>{
    }
   }
  });
+
  document.querySelectorAll(".gpu-assignment").forEach(select=>select.addEventListener("change",syncGpuMapping));
  syncAssignments();
  syncGpuMapping();
