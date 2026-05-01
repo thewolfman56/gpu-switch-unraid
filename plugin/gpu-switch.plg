@@ -14,49 +14,49 @@
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/state" />
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/create-config.sh">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/create-config.sh</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/create-config.sh</URL>
   </FILE>
 
   <FILE Run="/bin/bash /usr/local/emhttp/plugins/gpu-switch/create-config.sh" />
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.page">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/gpu-switch.page</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/gpu-switch.page</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/gpu-switch.sh</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/ui-status.sh">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/ui-status.sh</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/ui-status.sh</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/qemu-hook.php">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/qemu-hook.php</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/qemu-hook.php</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/settings.php">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/include/settings.php</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/include/settings.php</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/actions.php">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/include/actions.php</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/include/actions.php</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/ui.js">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/include/ui.js</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/include/ui.js</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/style.css">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/include/style.css</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/include/style.css</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/gpu_usage.php">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/include/gpu_usage.php</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/include/gpu_usage.php</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/include/test_tdarr.php">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/include/test_tdarr.php</URL>
+  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/src/usr/local/emhttp/plugins/gpu-switch/include/test_tdarr.php</URL>
   </FILE>
 
   <FILE Run="/bin/chmod +x /usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh" />

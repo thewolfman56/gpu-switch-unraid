@@ -1,0 +1,7 @@
+.drag{display:flex;gap:20px;flex-wrap:wrap}
+ul{border:1px solid #444;min-height:150px;width:200px;padding:10px}
+li{background:#222;margin:5px;padding:5px;color:#fff}
+.error{color:#c00;flex-basis:100%;margin-bottom:8px}
+.gpu-map{border-collapse:collapse;min-width:520px}
+.gpu-map th,.gpu-map td{border:1px solid #444;padding:8px;text-align:left}
+.gpu-map select{min-width:180px}
