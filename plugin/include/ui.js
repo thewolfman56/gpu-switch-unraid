@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
     // Redirect after successful save
     setTimeout(()=>{
-     window.location.href="/Settings/GPU%20Switch%20Manager";
+     window.location.href="/Settings/gpu-switch";
     },1000);
    }else{
     const errorText=await response.text();
