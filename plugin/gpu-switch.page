@@ -3,11 +3,132 @@ Title="GPU Switch Manager"
 Icon="cog"
 ---
 <?php
-$settings="/usr/local/emhttp/plugins/gpu-switch/include/settings.php";
-if(file_exists($settings)){
-  include $settings;
-}else{
-  echo "<h1>GPU Switch Manager</h1>";
-  echo "<p>Settings file not found: ".htmlspecialchars($settings)."</p>";
+$config=json_decode(file_get_contents("/usr/local/emhttp/plugins/gpu-switch/config.json"),true);
+$vms=array_filter(explode("\n",trim(shell_exec("virsh list --all --name"))));
+$containers=array_filter(explode("\n",trim(shell_exec("docker ps -a --format '{{.Names}}'"))));
+$gpuContainers=$config['containers']['gpu'] ?? [];
+$cpuContainers=$config['containers']['cpu'] ?? [];
+$savedGpus=is_array($config['gpus'] ?? null) ? $config['gpus'] : [];
+$vmGpuMap=is_array($config['vm_gpu_map'] ?? null) ? $config['vm_gpu_map'] : [];
+$assigned=array_flip(array_merge($gpuContainers,$cpuContainers));
+$availableContainers=array_values(array_filter($containers,function($c) use ($assigned){
+  return !isset($assigned[$c]);
+}));
+$detectedGpus=[];
+$gpuLines=array_filter(explode("\n",trim(shell_exec("nvidia-smi --query-gpu=index,name,pci.bus_id --format=csv,noheader 2>/dev/null"))));
+foreach($gpuLines as $line){
+  $parts=str_getcsv($line);
+  $index=trim($parts[0] ?? "");
+  $name=trim($parts[1] ?? "");
+  $bus=trim($parts[2] ?? "");
+  $id=$bus !== "" ? $bus : $index;
+  if($id === "") continue;
+  $detectedGpus[$id]=[
+    "index"=>$index,
+    "name"=>$name !== "" ? $name : "GPU ".$index,
+    "bus_id"=>$bus
+  ];
+}
+$gpus=!empty($detectedGpus) ? $detectedGpus : $savedGpus;
+foreach($gpus as $id=>$gpu){
+  if(!is_array($gpu)) $gpu=[];
+  $savedGpu=is_array($savedGpus[$id] ?? null) ? $savedGpus[$id] : [];
+  $gpus[$id]=array_merge($savedGpu,$gpu);
+}
+function gpu_assignment($gpuId,$gpu,$vmGpuMap){
+  foreach($vmGpuMap as $vm=>$mappedGpu){
+    if($mappedGpu === $gpuId) return "vm:".$vm;
+  }
+  return $gpu['role'] ?? "unused";
 }
 ?>
+
+<link rel="stylesheet" href="/plugins/gpu-switch/include/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/plugins/gpu-switch/include/ui.js"></script>
+
+<h1>GPU Switch Manager v4</h1>
+
+<form method="POST" action="/plugins/gpu-switch/include/actions.php" id="form">
+
+<section>
+<h2>VM</h2>
+<select name="vm_name">
+<?php foreach($vms as $vm): ?>
+<option value="<?= htmlspecialchars($vm,ENT_QUOTES) ?>" <?= $vm==$config['vm_name']?'selected':'' ?>><?= htmlspecialchars($vm) ?></option>
+<?php endforeach; ?>
+</select>
+</section>
+
+<section>
+<h2>Tdarr</h2>
+<input type="checkbox" name="tdarr_enabled" <?= $config['tdarr']['enabled']?'checked':'' ?>> Enable<br>
+<input id="tdarr_url" name="tdarr_url" value="<?= htmlspecialchars($config['tdarr']['url'],ENT_QUOTES) ?>"><br>
+<button type="button" onclick="testTdarr()">Test</button>
+<span id="tdarr_status"></span>
+</section>
+
+<section>
+<h2>GPU Mapping</h2>
+<input type="hidden" name="gpu_mapping" id="gpu_mapping">
+<div id="gpu_mapping_error" class="error"></div>
+<table class="gpu-map">
+<thead>
+<tr><th>GPU</th><th>Bus ID</th><th>Assignment</th></tr>
+</thead>
+<tbody>
+<?php foreach($gpus as $gpuId=>$gpu): ?>
+<?php $assignment=gpu_assignment($gpuId,$gpu,$vmGpuMap); ?>
+<tr>
+<td><?= htmlspecialchars($gpu['name'] ?? $gpuId) ?></td>
+<td><?= htmlspecialchars($gpu['bus_id'] ?? $gpuId) ?></td>
+<td>
+<select class="gpu-assignment" data-gpu-id="<?= htmlspecialchars($gpuId,ENT_QUOTES) ?>" data-gpu-name="<?= htmlspecialchars($gpu['name'] ?? $gpuId,ENT_QUOTES) ?>" data-gpu-bus-id="<?= htmlspecialchars($gpu['bus_id'] ?? $gpuId,ENT_QUOTES) ?>" data-gpu-index="<?= htmlspecialchars($gpu['index'] ?? "",ENT_QUOTES) ?>">
+<option value="unused" <?= $assignment==="unused"?'selected':'' ?>>Unused</option>
+<option value="docker" <?= $assignment==="docker"?'selected':'' ?>>Docker</option>
+<?php foreach($vms as $vm): ?>
+<option value="vm:<?= htmlspecialchars($vm,ENT_QUOTES) ?>" <?= $assignment==="vm:".$vm?'selected':'' ?>>VM: <?= htmlspecialchars($vm) ?></option>
+<?php endforeach; ?>
+</select>
+</td>
+</tr>
+<?php endforeach; ?>
+<?php if(empty($gpus)): ?>
+<tr><td colspan="3">No GPUs detected</td></tr>
+<?php endif; ?>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>Containers</h2>
+<div class="drag">
+<input type="hidden" name="containers_gpu" id="containers_gpu">
+<input type="hidden" name="containers_cpu" id="containers_cpu">
+<div id="assignment_error" class="error"></div>
+<ul id="available">
+<?php foreach($availableContainers as $c): ?>
+<li draggable="true"><?= htmlspecialchars($c) ?></li>
+<?php endforeach; ?>
+</ul>
+
+<ul id="gpu">
+<?php foreach($gpuContainers as $c): ?>
+<li draggable="true"><?= htmlspecialchars($c) ?></li>
+<?php endforeach; ?>
+</ul>
+<ul id="cpu">
+<?php foreach($cpuContainers as $c): ?>
+<li draggable="true"><?= htmlspecialchars($c) ?></li>
+<?php endforeach; ?>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>GPU Usage</h2>
+<canvas id="chart"></canvas>
+</section>
+
+<button>Save</button>
+</form>
