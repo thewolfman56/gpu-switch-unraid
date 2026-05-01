@@ -1,4 +1,31 @@
 <?php
+session_start();
+
+// CSRF Protection
+function generateCsrfToken() {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function validateCsrfToken($token) {
+    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+}
+
+// Input Sanitization
+function sanitizeInput($input) {
+    return htmlspecialchars(strip_tags(trim($input)), ENT_QUOTES, 'UTF-8');
+}
+
+// Validate CSRF token
+if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    header("Content-Type: text/plain");
+    echo 'Invalid CSRF token';
+    exit;
+}
+
 $p="/usr/local/emhttp/plugins/gpu-switch/config.json";
 $c=json_decode(file_get_contents($p),true);
 function posted_list($name){
@@ -53,9 +80,9 @@ foreach($gpuMapping as $mapping){
   }
   $mappedVms[$vm]=$mapping['gpu_id'];
 }
-$c['vm_name']=$_POST['vm_name'];
+$c['vm_name']=sanitizeInput($_POST['vm_name'] ?? '');
 $c['tdarr']['enabled']=isset($_POST['tdarr_enabled']);
-$c['tdarr']['url']=$_POST['tdarr_url'];
+$c['tdarr']['url']=sanitizeInput($_POST['tdarr_url'] ?? '');
 $c['containers']['gpu']=$gpu;
 $c['containers']['cpu']=$cpu;
 $c['vm_gpu_map']=$mappedVms;
@@ -76,4 +103,5 @@ foreach($gpuMapping as $mapping){
   }
 }
 file_put_contents($p,json_encode($c,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-header("Location: /Settings/GPU Switch Manager");
+header("Location: /Settings/gpu-switch");
+exit;

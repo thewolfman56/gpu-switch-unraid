@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded",()=>{
   let el=document.getElementById("assignment_error");
   if(!el) return;
   el.innerText=names.length ? "Container cannot be assigned to both GPU and CPU: "+names.join(", ") : "";
+  if(names.length && typeof showNotification === 'function'){
+   showNotification("Container cannot be assigned to both GPU and CPU: "+names.join(", "),"error");
+  }
  }
 
  function syncAssignments(){
@@ -56,6 +59,9 @@ document.addEventListener("DOMContentLoaded",()=>{
   let el=document.getElementById("gpu_mapping_error");
   if(!el) return;
   el.innerText=names.length ? "VM cannot be assigned to multiple GPUs: "+names.join(", ") : "";
+  if(names.length && typeof showNotification === 'function'){
+   showNotification("VM cannot be assigned to multiple GPUs: "+names.join(", "),"error");
+  }
  }
 
  function syncGpuMapping(){
@@ -96,20 +102,63 @@ document.addEventListener("DOMContentLoaded",()=>{
   };
  });
 
- document.getElementById("form").addEventListener("submit",e=>{
+ // Form submission handler
+ document.getElementById("form").addEventListener("submit",async e=>{
+  e.preventDefault();
   syncAssignments();
   syncGpuMapping();
   let duplicates=duplicateAssignments();
   if(duplicates.length){
-   e.preventDefault();
    showAssignmentError(duplicates);
+   return;
   }
   let duplicateVms=duplicateMappedVms();
   if(duplicateVms.length){
-   e.preventDefault();
    showGpuMappingError(duplicateVms);
+   return;
+  }
+
+  // Show loading state
+  if(typeof showLoading === 'function'){
+   showLoading('Saving configuration...');
+  }
+
+  try{
+   const formData=new FormData(document.getElementById("form"));
+   const response=await fetch("/plugins/gpu-switch/include/actions.php",{
+    method:"POST",
+    body:formData
+   });
+
+   if(response.ok){
+    if(typeof showNotification === 'function'){
+     showNotification('Configuration saved successfully','success');
+    }
+    // Redirect after successful save
+    setTimeout(()=>{
+     window.location.href="/Settings/gpu-switch";
+    },1000);
+   }else{
+    const errorText=await response.text();
+    if(typeof showNotification === 'function'){
+     showNotification('Failed to save configuration: '+errorText,'error');
+    }else{
+     alert('Failed to save configuration: '+errorText);
+    }
+   }
+  }catch(error){
+   if(typeof showNotification === 'function'){
+    showNotification('Error saving configuration: '+error.message,'error');
+   }else{
+    alert('Error saving configuration: '+error.message);
+   }
+  }finally{
+   if(typeof hideLoading === 'function'){
+    hideLoading();
+   }
   }
  });
+
  document.querySelectorAll(".gpu-assignment").forEach(select=>select.addEventListener("change",syncGpuMapping));
  syncAssignments();
  syncGpuMapping();
@@ -118,24 +167,72 @@ document.addEventListener("DOMContentLoaded",()=>{
 // tdarr test
 async function testTdarr(){
  let u=document.getElementById("tdarr_url").value;
- let r=await fetch("/plugins/gpu-switch/include/test_tdarr.php?url="+encodeURIComponent(u));
- document.getElementById("tdarr_status").innerText=await r.text();
+ if(!u){
+  if(typeof showNotification === 'function'){
+   showNotification('Please enter a Tdarr URL first','warning');
+  }else{
+   alert('Please enter a Tdarr URL first');
+  }
+  return;
+ }
+
+ try{
+  let r=await fetch("/plugins/gpu-switch/include/test_tdarr.php?url="+encodeURIComponent(u));
+  let result=await r.text();
+  let statusEl=document.getElementById("tdarr_status");
+  statusEl.innerText=result;
+
+  if(result === 'OK'){
+   statusEl.style.color='green';
+   if(typeof showNotification === 'function'){
+    showNotification('Tdarr connection test successful','success');
+   }
+  }else{
+   statusEl.style.color='red';
+   if(typeof showNotification === 'function'){
+    showNotification('Tdarr connection test failed','error');
+   }
+  }
+ }catch(error){
+  document.getElementById("tdarr_status").innerText='Error';
+  if(typeof showNotification === 'function'){
+   showNotification('Error testing Tdarr connection: '+error.message,'error');
+  }
+ }
 }
 
 // chart
 let chart;
 document.addEventListener("DOMContentLoaded",()=>{
  let ctx=document.getElementById("chart");
- chart=new Chart(ctx,{type:"line",data:{labels:[],datasets:[{label:"GPU %",data:[]}]}}); 
+ if(ctx){
+  chart=new Chart(ctx,{type:"line",data:{labels:[],datasets:[{label:"GPU %",data:[]}]});
+ }
+
+ // Cleanup on page unload
+ window.addEventListener('beforeunload',()=>{
+  if(chart){
+   chart.destroy();
+   chart=null;
+  }
+ });
 });
 
 async function update(){
  if(!chart) return;
- let r=await fetch("/plugins/gpu-switch/include/gpu_usage.php");
- let v=await r.text();
- chart.data.labels.push("");
- chart.data.datasets[0].data.push(v);
- if(chart.data.labels.length>20){chart.data.labels.shift();chart.data.datasets[0].data.shift();}
- chart.update();
+ try{
+  let r=await fetch("/plugins/gpu-switch/include/gpu_usage.php");
+  if(!r.ok){
+   console.error('Failed to fetch GPU usage:',r.status);
+   return;
+  }
+  let v=await r.text();
+  chart.data.labels.push("");
+  chart.data.datasets[0].data.push(v);
+  if(chart.data.labels.length>20){chart.data.labels.shift();chart.data.datasets[0].data.shift();}
+  chart.update();
+ }catch(error){
+  console.error('Error updating GPU usage:',error);
+ }
 }
 setInterval(update,2000);
