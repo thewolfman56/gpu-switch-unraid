@@ -1,12 +1,38 @@
-#!/bin/bash
+#!/bin/bash -e -u -o pipefail
 BASE="/usr/local/emhttp/plugins/gpu-switch"
 CONFIG="$BASE/config.json"
 LOG="$BASE/logs/gpu.log"
 STATE_DIR="$BASE/state"
 MODE="$BASE/state/mode"
 LEGACY_GPU="__all__"
+LOCK_FILE="/var/lock/gpu-switch.lock"
 
 mkdir -p "$STATE_DIR" "$(dirname "$LOG")"
+
+# File locking for concurrency control
+exec 200>"$LOCK_FILE"
+if ! flock -n 200; then
+  log "ERROR: Another GPU switch operation is in progress"
+  exit 1
+fi
+
+# Error handling function
+handle_error() {
+  local exit_code=$?
+  local line_number=$1
+  log "ERROR: Script failed at line $line_number with exit code $exit_code"
+  cleanup
+  exit $exit_code
+}
+
+trap 'handle_error $LINENO' ERR
+trap 'flock -u 200' EXIT
+
+# Cleanup function
+cleanup() {
+  log "Performing cleanup..."
+  # Release locks, remove temp files, etc.
+}
 
 log(){ echo "$(date '+%F %T') | $1" >> "$LOG"; }
 
@@ -87,6 +113,49 @@ container_uses_gpu(){
 running_container(){
   local container="$1"
   [[ "$(docker inspect -f '{{.State.Running}}' "$container" 2>/dev/null)" == "true" ]]
+}
+
+# GPU detection with retry logic
+detect_gpus_with_retry() {
+  local max_retries=3
+  local retry_delay=5
+
+  for ((i=1; i<=max_retries; i++)); do
+    local gpu_lines
+    gpu_lines=$(nvidia-smi --query-gpu=index,name,pci.bus_id --format=csv,noheader 2>/dev/null)
+    if [[ -n "$gpu_lines" ]]; then
+      echo "$gpu_lines"
+      return 0
+    fi
+    log "GPU detection failed (attempt $i/$max_retries), retrying in ${retry_delay}s..."
+    sleep $retry_delay
+  done
+
+  log "ERROR: GPU detection failed after $max_retries attempts"
+  return 1
+}
+
+# Container health monitoring
+monitor_container_health() {
+  local container="$1"
+  local max_wait=60
+  local elapsed=0
+
+  while [ $elapsed -lt $max_wait ]; do
+    local status
+    status=$(docker inspect --format='{{.State.Status}}' "$container" 2>/dev/null)
+    if [ "$status" = "running" ]; then
+      return 0
+    elif [ "$status" = "exited" ] || [ "$status" = "dead" ]; then
+      log "ERROR: Container $container failed to start (status: $status)"
+      return 1
+    fi
+    sleep 2
+    elapsed=$((elapsed + 2))
+  done
+
+  log "ERROR: Container $container did not start within ${max_wait}s"
+  return 1
 }
 
 save_state_for_gpu(){
