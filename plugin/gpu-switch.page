@@ -1,5 +1,5 @@
 Menu="Settings"
-Title="GPU Switch Manager"
+Title="gpu-switch"
 Icon="cog"
 ---
 <?php
