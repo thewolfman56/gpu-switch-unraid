@@ -12,6 +12,7 @@
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/include" />
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/logs" />
   <FILE Run="/bin/mkdir -p /usr/local/emhttp/plugins/gpu-switch/state" />
+  <FILE Run="/bin/bash -c 'if [ ! -f /usr/local/emhttp/plugins/gpu-switch/config.json ]; then echo "{\"vm_name\":\"\",\"auto_switch\":true,\"tdarr\":{\"enabled\":true,\"url\":\"http://localhost:8265\"},\"containers\":{\"gpu\":[],\"cpu\":[]},\"vm_gpu_map\":{},\"gpus\":{}}" > /usr/local/emhttp/plugins/gpu-switch/config.json; fi'" />
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.page">
   <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/gpu-switch.page</URL>
@@ -19,10 +20,6 @@
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/gpu-switch.sh">
   <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/gpu-switch.sh</URL>
-  </FILE>
-
-  <FILE Name="/usr/local/emhttp/plugins/gpu-switch/config.json">
-  <URL>https://raw.githubusercontent.com/thewolfman56/gpu-switch-unraid/security-and-robustness-improvements/plugin/config.json</URL>
   </FILE>
 
   <FILE Name="/usr/local/emhttp/plugins/gpu-switch/ui-status.sh">
